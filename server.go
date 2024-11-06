@@ -12,8 +12,22 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
+var db *sql.DB
+
 type CotacaoServer struct {
 	Bid string `json:"bid"`
+}
+
+func init() {
+	var err error
+	db, err = sql.Open("sqlite3", "cotacoes.db")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if _, err := db.Exec(`CREATE TABLE IF NOT EXISTS cotacoes (id INTEGER PRIMARY KEY AUTOINCREMENT, bid TEXT, timestamp DATETIME DEFAULT CURRENT_TIMESTAMP)`); err != nil {
+		log.Fatal(err)
+	}
 }
 
 func main() {
@@ -70,16 +84,6 @@ func getCotacaoUSDBRL(ctx context.Context) (*CotacaoServer, error) {
 }
 
 func saveCotacao(ctx context.Context, cotacao *CotacaoServer) error {
-	db, err := sql.Open("sqlite3", "cotacoes.db")
-	if err != nil {
-		return err
-	}
-	defer db.Close()
-
-	if _, err := db.ExecContext(ctx, `CREATE TABLE IF NOT EXISTS cotacoes (id INTEGER PRIMARY KEY AUTOINCREMENT, bid TEXT, timestamp DATETIME DEFAULT CURRENT_TIMESTAMP)`); err != nil {
-		return err
-	}
-
-	_, err = db.ExecContext(ctx, "INSERT INTO cotacoes (bid) VALUES (?)", cotacao.Bid)
+	_, err := db.ExecContext(ctx, "INSERT INTO cotacoes (bid) VALUES (?)", cotacao.Bid)
 	return err
 }
