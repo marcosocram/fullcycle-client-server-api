@@ -66,15 +66,15 @@ Se o tempo de resposta do servidor ou da API externa ultrapassar os limites esta
 
 * Erro ao obter a cotação (servidor):
     ```
-    Erro ao obter cotação: context deadline exceeded
+    Erro ao obter cotação: <error>: context deadline exceeded
     ```
 * Erro ao salvar a cotação no banco de dados (servidor):
     ```
-    Erro ao salvar cotação no banco: context deadline exceeded
+    Erro ao salvar cotação no banco: <error>: context deadline exceeded
     ```
 * Erro ao obter a cotação (cliente):
     ```
-  Erro ao obter cotação: context deadline exceeded
+  Erro ao obter cotação: <error>: context deadline exceeded
     ```
   
 Esses erros indicam que algum timeout foi atingido (seja ao chamar a API ou ao salvar a cotação no banco).

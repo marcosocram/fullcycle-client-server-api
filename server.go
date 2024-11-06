@@ -45,6 +45,7 @@ func cotacaoHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(w, "Erro ao obter cotação", http.StatusInternalServerError)
 		log.Println("Erro ao obter cotação:", err)
+		json.NewEncoder(w).Encode(err.Error())
 		return
 	}
 
@@ -55,6 +56,7 @@ func cotacaoHandler(w http.ResponseWriter, r *http.Request) {
 	if err := saveCotacao(ctxDB, cotacao); err != nil {
 		http.Error(w, "Erro ao salvar cotação no banco", http.StatusInternalServerError)
 		log.Println("Erro ao salvar cotação no banco:", err)
+		json.NewEncoder(w).Encode(err.Error())
 		return
 	}
 

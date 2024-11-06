@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -22,7 +23,7 @@ func main() {
 
 	cotacao, err := getCotacaoServerAPI(ctx)
 	if err != nil {
-		log.Fatal("Erro ao obter cotação:", err)
+		log.Fatal(err)
 	}
 
 	if err := saveFileCotacao(cotacao); err != nil {
@@ -43,6 +44,11 @@ func getCotacaoServerAPI(ctx context.Context) (*CotacaoClient, error) {
 		return nil, err
 	}
 	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		bodyBytes, _ := io.ReadAll(resp.Body)
+		return nil, fmt.Errorf("%v", string(bodyBytes))
+	}
 
 	var cotacao CotacaoClient
 	if err := json.NewDecoder(resp.Body).Decode(&cotacao); err != nil {
